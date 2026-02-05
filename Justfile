@@ -3,6 +3,15 @@
 # list all tasks
 default:
   @just --list
+ci-lite:
+    @echo "Running Formatter Check..."
+    cargo fmt -- --check
+    @echo "Running Clippy (Linter)..."
+    cargo clippy --all-targets -- -D warnings
+    @echo "Running Unit Tests (Skipping expensive scenario tests)..."
+    cargo test --lib
+    @echo "✅ CI Lite Passed! Ready to push.”
+
 
 # Run all style checks and formatting (precommit validation)
 check-everything:
