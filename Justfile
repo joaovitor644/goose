@@ -10,7 +10,7 @@ ci-lite:
     cargo clippy --all-targets -- -D warnings
     @echo "Running Unit Tests (Skipping expensive scenario tests)..."
     cargo test --lib
-    @echo "✅ CI Lite Passed! Ready to push.”
+    @echo "CI Lite Passed! Ready to push."
 
 
 # Run all style checks and formatting (precommit validation)
