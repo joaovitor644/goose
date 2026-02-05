@@ -1,0 +1,46 @@
+name: CI Lite (Optimized Check)
+
+# Roda em todo Push ou Pull Request
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
+  workflow_dispatch: # Permite rodar manualmente clicando num botão
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  fast-check:
+    name: Formatter, Clippy & Unit Tests
+    runs-on: ubuntu-latest
+    
+    steps:
+      # 1. Baixa o código
+      - uses: actions/checkout@v4
+
+      # 2. Instala dependências do Sistema (CRÍTICO para o Goose)
+      # Sem isso, o cargo test falha pois não acha bibliotecas gráficas
+      - name: Install System Dependencies
+        run: |
+          sudo apt update -y
+          sudo apt install -y libdbus-1-dev gnome-keyring libxcb1-dev
+
+      # 3. Instala o Rust (com componentes fmt e clippy)
+      - name: Install Rust Toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+
+      # 4. Cache do Rust (Para ser rápido - Otimização extra!)
+      - name: Rust Cache
+        uses: Swatinem/rust-cache@v2
+
+      # 5. Instala o 'just' (o executor de tarefas)
+      - name: Install Just
+        uses: extra-toolchains/setup-just@v1
+
+      # 6. Roda o seu comando novo
+      - name: Run CI Lite
+        run: just ci-lite
